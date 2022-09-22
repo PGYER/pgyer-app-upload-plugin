@@ -1,0 +1,4 @@
+<?jelly escape-by-default='true'?>
+<div>
+    This plug-in upload the apk/ipa file to pgyer
+</div>
