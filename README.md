@@ -7,7 +7,7 @@
 Pgyer can upload the application to the site, generate installation link and qr code user to open the installation link, or scan code qr code, can start installation.
 
 ### User's guidance
-So this plugin can be uploaded to the pgyer platform！**And it can put the fields returned by pgyer into an environment variable, which you can use in other build steps**, You can select `upload to pgyer` by adding build steps or adding post-build steps.
+So this plugin can be uploaded to the pgyer platform！**And it can put the fields returned by pgyer into an environment variable, which you can use in other build steps**, You can select `pgyer app upload` by adding build steps or adding post-build steps.
 
 ![](./images/setting-screenshot.png)
 
