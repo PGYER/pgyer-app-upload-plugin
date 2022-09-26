@@ -123,7 +123,7 @@ public class PgyerUpload {
 
         String result = "";
         try {
-            CommonUtil.printMessage(listener, true, "Upload：getToken to " + UPLOAD_URL);
+            CommonUtil.printMessage(listener, true, "upload：getToken to " + UPLOAD_URL);
 
             // optimization upload description
             if (CommonUtil.isBlank(paramsBean.getBuildUpdateDescription())
@@ -154,8 +154,8 @@ public class PgyerUpload {
                     .newCall(request).execute();
 
             if (execute.body() == null) {
-                CommonUtil.printMessage(listener, true, "Upload failed with pgyer!");
-                CommonUtil.printMessage(listener, true, "Upload token result is null.");
+                CommonUtil.printMessage(listener, true, "upload failed with pgyer!");
+                CommonUtil.printMessage(listener, true, "upload token result is null.");
                 return null;
             }
             result = execute.body().string();
@@ -174,14 +174,14 @@ public class PgyerUpload {
                 return null;
             }
             if (tokenBean.getCode() != 0) {
-                CommonUtil.printMessage(listener, true, "Upload failed with pgyer!");
-                CommonUtil.printMessage(listener, true, "error code：" + tokenBean.getCode());
-                CommonUtil.printMessage(listener, true, "error message：" + tokenBean.getMessage() + "\n");
+                CommonUtil.printMessage(listener, true, "upload failed with pgyer!");
+                CommonUtil.printMessage(listener, true, "ERROR code：" + tokenBean.getCode());
+                CommonUtil.printMessage(listener, true, "ERROR message：" + tokenBean.getMessage() + "\n");
                 return null;
             }
             return upload2PgyerFile(envVars, paramsBean,tokenBean,listener);
         } catch (IOException e) {
-            listener.message(true, "Pgyer result: " + result);
+            listener.message(true, "pgyer result: " + result);
             listener.message(true, "ERROR: " + e.getMessage() + "\n");
             return null;
         }
@@ -213,8 +213,8 @@ public class PgyerUpload {
 
         String result = "";
         try {
-            CommonUtil.printMessage(listener, true, "Upload：" + uploadFile.getName() + " to Pgyer");
-            CommonUtil.printMessage(listener, true, "Upload file size: " + CommonUtil.convertFileSize(uploadFile.length()));
+            CommonUtil.printMessage(listener, true, "upload：" + uploadFile.getName() + " to Pgyer");
+            CommonUtil.printMessage(listener, true, "upload file size: " + CommonUtil.convertFileSize(uploadFile.length()));
 
             MediaType type = MediaType.parse("application/octet-stream");
             RequestBody fileBody = RequestBody.create(type, uploadFile);
@@ -239,19 +239,20 @@ public class PgyerUpload {
                     .newCall(request).execute();
 
             if (execute.body() == null) {
-                CommonUtil.printMessage(listener, true, "Upload file failed with oss");
-                CommonUtil.printMessage(listener, true, "Upload file result is null.");
+                CommonUtil.printMessage(listener, true, "upload file failed with oss");
+                CommonUtil.printMessage(listener, true, "upload file result is null.");
                 return null;
             }
             if(execute.code() == 204){
                 String url = "https://www.pgyer.com/apiv2/app/buildInfo?_api_key="+ paramsBean.getApiKey()+"&buildKey="+tokenBean.getData().getKey();
+                times = 0;
                 return uploadResult(url, paramsBean,listener);
             } else {
-                CommonUtil.printMessage(listener, true, "Upload failed with pgyer");
+                CommonUtil.printMessage(listener, true, "upload failed with pgyer");
                 return null;
             }
         } catch (IOException e) {
-            listener.message(true, "Pgyer result: " + result);
+            listener.message(true, "pgyer result: " + result);
             listener.message(true, "ERROR: " + e.getMessage() + "\n");
             return null;
         }
@@ -260,7 +261,7 @@ public class PgyerUpload {
     static boolean bGo = true;
     static Timer timers = null;
     static int delay = 5000;
-
+    static int times = 0;
     /**
      * Obtain the result of PGYER synchronizing data upload（获取pgyer 同步上传数据结果）
      * @param url
@@ -270,9 +271,11 @@ public class PgyerUpload {
      */
     public static PgyerBean uploadResult(String url, ParamsBean paramsBean, Message listener){
         String result = "";
-        CommonUtil.printMessage(listener, true, "upload：Wait for the PGYER synchronization result");
+        CommonUtil.printMessage(listener, true, "upload：Wait for the pgyer synchronization result");
         try {
             //同步数据需要3~5秒延迟4秒获取最终同步数据
+            timers = null;
+            bGo = true;
             timers = new Timer(delay, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -289,7 +292,7 @@ public class PgyerUpload {
             while (bGo){
                 i++;
                 if(i % 2000000000 == 0){
-                    CommonUtil.printMessage(listener, true, "upload：Pgyer is synchronizing data……");
+                    CommonUtil.printMessage(listener, true, "upload：pgyer is synchronizing data……");
                 }
             }
             Request request = new Request.Builder().url(url).get().build();
@@ -302,7 +305,7 @@ public class PgyerUpload {
                     .newCall(request).execute();
 
             if (execute.body() == null) {
-                CommonUtil.printMessage(listener, true, "Upload file result failed with uploadResult");
+                CommonUtil.printMessage(listener, true, "upload file result failed with uploadResult");
                 CommonUtil.printMessage(listener, true, "upload file result is null.");
                 return null;
             }
@@ -322,15 +325,23 @@ public class PgyerUpload {
             }
 
             if (pgyerBean.getCode() != 0) {
-                if(pgyerBean.getCode() == 1246){
-                    CommonUtil.printMessage(listener, true, "upload：Pgyer has not synchronized the results");
-                    bGo = true;
-                    delay = 2000;
-                    return uploadResult(url, paramsBean,listener);
+                if(pgyerBean.getCode() == 1246 || pgyerBean.getCode() == 1247){
+                    if(times < 5){
+                        times ++ ;
+                        CommonUtil.printMessage(listener, true, "upload：Pgyer has not synchronized the results");
+                        bGo = true;
+                        delay = 2000;
+                        return uploadResult(url, paramsBean,listener);
+                    } else {
+                        CommonUtil.printMessage(listener, true, "upload failed with pgyer!");
+                        CommonUtil.printMessage(listener, true, "ERROR code：" + pgyerBean.getCode());
+                        CommonUtil.printMessage(listener, true, "ERROR message：" + pgyerBean.getMessage() + "\n");
+                        return null;
+                    }
                 } else {
-                    CommonUtil.printMessage(listener, true, "Upload failed with pgyer api v2!");
-                    CommonUtil.printMessage(listener, true, "error code：" + pgyerBean.getCode());
-                    CommonUtil.printMessage(listener, true, "error message：" + pgyerBean.getMessage() + "\n");
+                    CommonUtil.printMessage(listener, true, "upload failed with pgyer!");
+                    CommonUtil.printMessage(listener, true, "ERROR code：" + pgyerBean.getCode());
+                    CommonUtil.printMessage(listener, true, "ERROR message：" + pgyerBean.getMessage() + "\n");
                     return null;
                 }
             }
@@ -339,7 +350,7 @@ public class PgyerUpload {
             pgyerBean.getData().setAppBuildURL(CommonUtil.PGYER_HOST + "/" + pgyerBean.getData().getBuildKey());
             pgyerBean.getData().setBuildIcon(CommonUtil.PGYER_HOST + "/image/view/app_icons/" + pgyerBean.getData().getBuildIcon());
 
-            CommonUtil.printMessage(listener, true, "Uploaded successfully!\n");
+            CommonUtil.printMessage(listener, true, "uploaded successfully!\n");
             printResultInfo(pgyerBean, listener);
             writeEnvVars(paramsBean, pgyerBean, listener);
             downloadQrcode(paramsBean, pgyerBean, listener);
