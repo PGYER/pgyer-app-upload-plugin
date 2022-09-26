@@ -8,7 +8,7 @@
         <relativePath />
     </parent>
     <groupId>com.pgyer.app.upload</groupId>
-    <artifactId>pgyer-app-upload-plugin</artifactId>
+    <artifactId>pgyer-app-upload</artifactId>
     <version>${revision}${changelist}</version>
     <packaging>hpi</packaging>
     <properties>
@@ -16,7 +16,7 @@
         <changelist>-SNAPSHOT</changelist>
 
         <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
-        <jenkins.version>2.235.1</jenkins.version>
+        <jenkins.version>2.277.1</jenkins.version>
         <java.level>8</java.level>
     </properties>
     <name>Pgyer App Uploda Plugin</name>
