@@ -181,7 +181,7 @@ public class PgyerUpload {
             }
             return upload2PgyerFile(envVars, paramsBean,tokenBean,listener);
         } catch (IOException e) {
-            listener.message(true, "pgyer result: " + result);
+            listener.message(true, "Pgyer result: " + result);
             listener.message(true, "ERROR: " + e.getMessage() + "\n");
             return null;
         }
@@ -252,7 +252,7 @@ public class PgyerUpload {
                 return null;
             }
         } catch (IOException e) {
-            listener.message(true, "pgyer result: " + result);
+            listener.message(true, "Pgyer result: " + result);
             listener.message(true, "ERROR: " + e.getMessage() + "\n");
             return null;
         }
@@ -357,7 +357,7 @@ public class PgyerUpload {
             return pgyerBean;
         } catch (IOException e) {
             e.printStackTrace();
-            listener.message(true, "pgyer result: " + result);
+            listener.message(true, "Pgyer result: " + result);
             listener.message(true, "ERROR: " + e.getMessage() + "\n");
             return null;
         }
