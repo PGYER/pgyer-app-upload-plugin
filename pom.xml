@@ -8,7 +8,7 @@
         <relativePath />
     </parent>
     <groupId>com.pgyer.app.upload</groupId>
-    <artifactId>pgyer-app-upload</artifactId>
+    <artifactId>pgyer-app-upload-plugin</artifactId>
     <version>${revision}${changelist}</version>
     <packaging>hpi</packaging>
     <properties>
