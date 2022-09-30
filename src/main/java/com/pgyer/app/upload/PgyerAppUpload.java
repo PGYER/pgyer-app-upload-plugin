@@ -29,11 +29,8 @@ public class PgyerAppUpload extends Recorder {
     private final String buildName;
     private final String buildChannelShortcut;
 
-    private final String qrcodePath;
-    private final String envVarsPath;
-
     @DataBoundConstructor
-    public PgyerAppUpload(Secret apiKey, String scanDir, String wildcard, String buildInstallType, Secret buildPassword, String buildUpdateDescription, String buildName, String buildChannelShortcut, String qrcodePath, String envVarsPath) {
+    public PgyerAppUpload(Secret apiKey, String scanDir, String wildcard, String buildInstallType, Secret buildPassword, String buildUpdateDescription, String buildName, String buildChannelShortcut) {
         this.apiKey = Secret.fromString(String.valueOf(apiKey));
         this.scanDir = scanDir;
         this.wildcard = wildcard;
@@ -42,8 +39,6 @@ public class PgyerAppUpload extends Recorder {
         this.buildUpdateDescription = buildUpdateDescription;
         this.buildName = buildName;
         this.buildChannelShortcut = buildChannelShortcut;
-        this.qrcodePath = qrcodePath;
-        this.envVarsPath = envVarsPath;
     }
 
     public Secret getApiKey() {
@@ -78,14 +73,6 @@ public class PgyerAppUpload extends Recorder {
         return buildChannelShortcut;
     }
 
-    public String getQrcodePath() {
-        return qrcodePath;
-    }
-
-    public String getEnvVarsPath() {
-        return envVarsPath;
-    }
-
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         ParamsBean paramsBean = new ParamsBean();
@@ -97,10 +84,7 @@ public class PgyerAppUpload extends Recorder {
         paramsBean.setBuildName(buildName);
         paramsBean.setBuildUpdateDescription(buildUpdateDescription);
         paramsBean.setBuildChannelShortcut(buildChannelShortcut);
-        paramsBean.setQrcodePath(qrcodePath);
-        paramsBean.setEnvVarsPath(envVarsPath);
         return PgyerHelper.upload(build, listener, paramsBean);
-//        return super.perform(build, launcher, listener);
     }
 
     @Override

@@ -21,8 +21,6 @@ installType|`(Optional)` Application installation, the value is (1,2,3).<br/>1: 
 password|(Optional) Set the App installation password, if you do not want to set the password, please pass empty string, or not pass.
 updateDescription|`(Optional)` Version update description, please pass empty string, or not pass.
 channelShortcut|`(Optional)` The download short link of the specified channel that needs to be updated, only one channel can be specified, string type, such as: abcd.
-qrcodePath|`(Optional)` If you need to download the qrcode, please enter the save path of the qrcode!otherwise, not download!
-envVarsPath|`(Optional)` if you need to save info, please enter save file path! otherwise, not save!
 
 ### Running log
 ![](./images/pgyer-app-upload-running-log.png)

@@ -47,8 +47,6 @@ public class PgyerHelper {
         paramsBean.setBuildUpdateDescription(build.getEnvironment(listener).expand(paramsBean.getBuildUpdateDescription()));
         paramsBean.setBuildName(build.getEnvironment(listener).expand(paramsBean.getBuildName()));
         paramsBean.setBuildChannelShortcut(build.getEnvironment(listener).expand(paramsBean.getBuildChannelShortcut()));
-        paramsBean.setQrcodePath(build.getEnvironment(listener).expand(paramsBean.getQrcodePath()));
-        paramsBean.setEnvVarsPath(build.getEnvironment(listener).expand(paramsBean.getEnvVarsPath()));
 
         // upload
         PgyerBean pgyerBean = PgyerUpload.upload2Pgyer(build.getEnvironment(listener), true, paramsBean, message);

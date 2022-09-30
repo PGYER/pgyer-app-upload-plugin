@@ -36,14 +36,6 @@
             <f:textbox/>
         </f:entry>
 
-        <f:entry title="qrcodePath(optional)" field="qrcodePath">
-            <f:textbox/>
-        </f:entry>
-
-        <f:entry title="envVarsPath(optional)" field="envVarsPath">
-            <f:textbox/>
-        </f:entry>
-
     </f:advanced>
 
 </j:jelly>

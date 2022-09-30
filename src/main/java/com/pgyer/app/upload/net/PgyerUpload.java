@@ -82,8 +82,6 @@ public class PgyerUpload {
         paramsBean.setScandir(maps.get("-scanDir"));
         paramsBean.setWildcard(maps.get("-wildcard"));
         paramsBean.setBuildName(maps.containsKey("-buildName") ? maps.get("-buildName") : "");
-        paramsBean.setQrcodePath(maps.containsKey("-qrcodePath") ? maps.get("-qrcodePath") : null);
-        paramsBean.setEnvVarsPath(maps.containsKey("-envVarsPath") ? maps.get("-envVarsPath") : null);
         paramsBean.setBuildPassword(maps.containsKey("-buildPassword") ? maps.get("-buildPassword") : "");
         paramsBean.setBuildInstallType(maps.containsKey("-buildInstallType") ? maps.get("-buildInstallType") : "1");
         paramsBean.setBuildUpdateDescription(maps.containsKey("-buildUpdateDescription") ? maps.get("-buildUpdateDescription") : "");
@@ -352,70 +350,12 @@ public class PgyerUpload {
 
             CommonUtil.printMessage(listener, true, "uploaded successfully!\n");
             printResultInfo(pgyerBean, listener);
-            writeEnvVars(paramsBean, pgyerBean, listener);
-            downloadQrcode(paramsBean, pgyerBean, listener);
             return pgyerBean;
         } catch (IOException e) {
             e.printStackTrace();
             listener.message(true, "Pgyer result: " + result);
             listener.message(true, "ERROR: " + e.getMessage() + "\n");
             return null;
-        }
-    }
-
-    /**
-     * Download the qr code
-     *
-     * @param paramsBean paramsBeanV2
-     * @param pgyerBean  pgyerBeanV2
-     * @param listener     listener
-     */
-    private static void downloadQrcode(ParamsBean paramsBean, PgyerBean pgyerBean, Message listener) {
-        if (paramsBean.getQrcodePath() == null) {
-            return;
-        }
-        if (CommonUtil.replaceBlank(paramsBean.getQrcodePath()).length() == 0) {
-            return;
-        }
-        CommonUtil.printMessage(listener, true, "Downloading the qr code……");
-        File qrcode = new File(paramsBean.getQrcodePath());
-        if (!qrcode.getParentFile().exists() && !qrcode.getParentFile().mkdirs()) {
-            CommonUtil.printMessage(listener, true, "Oh, my god, download the qr code failed……" + "\n");
-            return;
-        }
-        File file = CommonUtil.download(pgyerBean.getData().getBuildQRCodeURL(), qrcode.getParentFile().getAbsolutePath(), qrcode.getName());
-        if (file != null) {
-            CommonUtil.printMessage(listener, true, "Download the qr code successfully! " + file + "\n");
-        } else {
-            CommonUtil.printMessage(listener, true, "Oh, my god, download the qr code failed……" + "\n");
-        }
-    }
-
-    /**
-     * Writing the environment variable to the file.
-     *
-     * @param paramsBean paramsBeanV2
-     * @param pgyerBean  pgyerBeanV2
-     * @param listener     listener
-     */
-    private static void writeEnvVars(ParamsBean paramsBean, PgyerBean pgyerBean, Message listener) {
-        if (paramsBean.getEnvVarsPath() == null) {
-            return;
-        }
-        if (CommonUtil.replaceBlank(paramsBean.getEnvVarsPath()).length() == 0) {
-            return;
-        }
-        CommonUtil.printMessage(listener, true, "Writing the environment variable to the file……");
-        File envVars = new File(paramsBean.getEnvVarsPath());
-        if (!envVars.getParentFile().exists() && !envVars.getParentFile().mkdirs()) {
-            CommonUtil.printMessage(listener, true, "Oh my god, the environment variable writes failed……" + "\n");
-            return;
-        }
-        File file = CommonUtil.write(envVars.getAbsolutePath(), getEnvVarsInfo(pgyerBean), "utf-8");
-        if (file != null) {
-            CommonUtil.printMessage(listener, true, "The environment variable is written successfully! " + file + "\n");
-        } else {
-            CommonUtil.printMessage(listener, true, "Oh my god, the environment variable writes failed……" + "\n");
         }
     }
 
